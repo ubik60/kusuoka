@@ -1,0 +1,627 @@
+%&LaTeX
+\documentclass[11pt]{scrartcl}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+%\usepackage[notref]{showkeys} % REMOVE LATER
+%\usepackage[latin1]{inputenc}
+\usepackage{mydefs,mybeamer,mytikz}
+
+\def\X{X}
+\renewcommand{\T}{^*}
+\renewcommand{\H}{\mscr{H}}
+
+%\numberwithin{equation}{section}
+\renewcommand{\rm}{\normalshape}%
+%redefining \rm to mean : change to roman style
+%\setlength{\textwidth}{400pt}
+%\setlength{\hoffset}{-30pt}
+%\setlength{\parindent}{0pt}
+%\addtolength{\parskip}{5pt}
+%\addtolength{\headheight}{1.15pt}  % to prevent strange error messages
+%\linespread{1.1}
+%%%%%%%%%%%%%%%% \section{MYDEFS}
+%
+\theoremstyle{plain} %% This is the default
+\newtheorem{thm}{Theorem}%[section]
+%\newtheorem{theorem}{Theorem}%[section]
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+%\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{ax}{Axiom}
+\newtheorem{claim}{Claim}
+\theoremstyle{definition}
+%\newtheorem{problem}{Problem}
+\newtheorem{defn}{Definition}
+%\newtheorem{definition}{Definition}
+%\newtheorem{example}{Example}
+\newtheorem{ex}{Example}
+\newtheorem{question}{Question}
+
+\newlength{\ppph}
+\settoheight{\ppph}{$\tl P$}
+\newcommand{\px}{\rule{0pt}{\ppph}}
+
+\providecommand{\ii}[1]{^{(#1)}}
+
+\renewcommand{\l}{l}
+
+\renewcommand{\lll}{\ll^{\tiny\mathrm{loc}}}
+\renewcommand{\ae}{almost everywhere\xspace}
+\newcommand{\as}{almost surely\xspace}
+\newcommand{\TV}{{TV}} 
+
+\def\ppp#1\par{\par\paragraph{#1}}
+\begin{document}
+\title{Ergodic Theory of Kusuoka Measure} 
+\author{Anders Johansson, Anders \"Oberg and Mark Pollicott}
+%\address{Anders Johansson\\ Academy of technology and environmental sciences\\
+%University of G\"avle\\ SE-801 76 G\"avle\\ Sweden\\}  
+%\email{ajj@hig.se} 
+%\address{Anders \"Oberg\\ Department of Mathematics\\ Uppsala University\\ P.O. Box 480 \ \ SE-751 06\\
+%Uppsala \\ Sweden} 
+%\email{anders@math.uu.se}
+%\address{Mark Pollicott\\Mathematics Insitute\\ University of Warwick\\ Coventry\\ CV4 7AL\\ UK}
+%\email{mpollic@maths.warwick.ac.uk}
+\date{\today} 
+%\keywords{Kusuoka measure, energy Laplacian, analysis on fractals, transfer operator} 
+%\subjclass[2000]{Primary 28A80, 37A05, 37A35, 60G10}
+\maketitle
+\begin{abstract}
+\noindent
+{\bf Abstract}\newline
+\noindent
+In analysis on fractal sets, the Kusuoka measure has a prominent role, as it is used, together with a bilinear energy form, to define a Laplacian. Little is known about the measure itself, however, except from Kusuoka's intriguing paper \cite{kusuoka2}, Kajino's \cite{kajino} and the recent result by Strichartz and his collaborators \cite{str3}. Here we turn on an investigation of the Kusuoka measure from an ergodic theoretic viewpoint. We prove exponential rate of convergence for the iterates of the transfer operator for Kusuoka measure defined on post-critically finite fractal sets. We obtain specific results in the case of some specific examples, including the Sierpinski Gasket. In addition, we prove that the Kusuoka measure satisfies a functional central limit theorem for all post-critically finite fractals. 
+\end{abstract}
+
+\section{The Kusuoka measure}
+
+\def\scp#1#2{\left\langle #1, #2\right\rangle}
+\def\W{\msf W}
+
+\subsection{Preliminaries}
+
+\subsubsection{The Hilbert-schmidt norm and SVD}
+
+Given a separable Hilbert-space $\H$ with Hermitian inner product 
+$$(u,v) \mapsto \scp uv = u^*v. $$
+An operator $\W:\H\to\H$ is a \emph{Hilbert-Schmidt} operator if it is bounded in
+the Frobenius norm
+$$ \| \W \|^2 := \Tr(\W\T \W) $$
+where trace is defined as 
+$$ \Tr( \W ) = \sum_{i} u_i\T \W u_i, $$ 
+for any ON-basis $\{u_1,u_2,\dots\}$. 
+Such operators $\W$ are compact, i.e.\ the image $\W(\mscr U)$ of the
+unit ball in $\H$ is compact. Moreover, for any bounded linear
+operator $A$, the compositions $A\W$ and $\W A$ remain
+Hilbert-Schmidt. 
+
+For Hilbert-Schmidt operators $B:\H\to\H$, we use the (Frobenius-) norm 
+$$ \| B \|_{HS} = \left( \Tr(B\T B) \right)^{1/2}. $$
+We will also use the \emph{singular value decomposition} (SVD). That is, for a
+operator $B:\mscr H\to\mscr H$, we have a factorisation
+$$ B = V D U^*, $$ 
+where $U$ and $V$ are two unitary operators and $D$ is a diagonal
+operator. The diagonal of $D$ is a unique sequence of positive and
+decreasing \emph{singular values} of $B$.  The subspaces spanned by
+the columns in $V$ and $U$ corresponding to the same singular value
+$\sigma_i(B)$; these subspaces constitute the eigenspaces of the
+operators $B^*B$ and $BB^*$, respectively, corresponding to the common
+eigenvalue $\lambda_i=\sigma_i^2(B)$. We can recover the singulaar
+values using the variational definition
+$$ \sigma_k(B) = \min\left\{\|B-F\|_{\H} : \opn{rank}(F)=k-1 \right\} $$
+where $\| \cdot \|_{\H}$ denotes the operator norm 
+$$ \| A \|_{\H} = \sup_{u\in\H} \frac{\| A u \|}{\| u \|}. $$
+The operator norm i given by the largest singular value $\sigma_1$.
+
+Note that for an Hilbert-Schmidt operator $B$ with SVD $B=V D U^*$, we
+have
+$$ \| B \|_{HS} = \| D \|_{HS} = \sqrt{\sigma_1^2(B)+\sigma_2^2(B)+\dots}, $$
+since it holds in general that $$\| U A V \|_{HS} = \|A\|_{HS}$$ for
+any pair $U$ and $V$ of unitary operators.
+
+\subsubsection{The induced norm $\|\cdot\| =\|\cdot\|_\W$}
+
+Let $\W$ be a fixed \emph{symmetric} Hilbert-Schmidt operator $\W$ such that
+$\Tr(\W^*\W)=1$. For bounded operators $A:\H \to \H$, we
+define the norm 
+\begin{equation}\label{normdef}
+\| A \| = \| A\W \|_{HS}= \Tr( \W A^* A \W ) = \Tr(A\W^2 A^*),
+\end{equation}
+where the last equality is due to the fact that $\Tr(R^* R)=\Tr(RR^*)$
+and $\W$ is symmetric. The norm of the identity operator is one, i.e.\ 
+\begin{equation}
+    \| I \| = 1. \label{normunit}
+\end{equation}
+For a bounded operator $A$ and for any unitary operator $U$, it olds tahat
+\begin{equation}
+    \| UA \| = \| A \|
+\end{equation}
+
+
+We also define $\mb s(A) = (s_1,s_2,\dots)$ as the singular
+values of the operator $AW$, so that the singular value decomposition
+of $AW$ is given by
+\begin{equation}\label{sigmadef}
+AW = V \, \opn{diag}(\mb s(A)) \, U^*
+\end{equation}
+
+Let $\mc P_k$ denote the set of orthogonal projections $P:\H\to
+\H'$, where $\opn{dim} \H' = k$ and let $\W \mc P_k$ be the image of
+$\mc P_k$ under the compact map $\W$.
+\begin{lemma}\label{maxlemma}
+  For a operator $B$, we have 
+  $$ s_1(B)^2 + s_2(B)^2 + \dots + s_k(B)^2 = 
+    \max_{R\in \W(\mc P_k)} \Tr( R^* B^* B R) $$
+  and 
+  $$ s_{k+1}(B)^2 + s_{k+2}(B)^2 + \dots = 
+    \min_{R\in \W(\mc P_k)} \Tr( (W-R)^* B^* B (W-R)). $$
+\end{lemma}
+
+\subsubsection{Random products}
+
+Consider a finite set $\mc S=\{A_1,\dots,A_N\}$ of invertible
+operators such that 
+\begin{equation}\label{eqid}
+A_1^*A_1 + A_2^* A_2 + \dots + A_N^*A_N = I.
+\end{equation}
+We also assume that the there exists no common invariant subspace of $\H$ to the
+$A_i$s except $\H$ and $\{0\}$. 
+
+We consider a random sequence $\{ X_n: n\geq0 \}$ 
+of bounded operators such that for $n\geq 1$
+$$ X_n = X'_n X_{n-1}. $$
+where $X'_n\in \mc S$ has distribution
+$$ \P(X'_n=A_i\mid X_n,X_{n-1},\dots) = \frac{\|A_iX_n\|^2}{\|X_n\|} $$
+It follow that $\{X_n\}$ is a Markov process. 
+
+
+Let 
+$$ Q_n = \frac{X_n^* X_n}{\| X_n \|^2}. $$
+Then $Q_n$ is symmetric and $\|Q_n^{1/2}\|=1$. 
+The following lemma states that $Q_n$ converge to some rank-one
+operator $UU^*$ at an exponential rate. 
+\begin{lemma} 
+  There is an $\eta$, $0<\eta<1$, 
+  such that some random unit vector $U\in\H$, we have
+  \begin{equation}\label{lim0}
+  \| Q_n^{1/2} -(UU*)^{1/2}\| = \Ordo{\eta^n}
+  \end{equation}
+  almost surely. It follows that 
+  $$ \left\| \mb s(\hat X_n) - (1,0,0,\dots) \right\|_{\ell^2} = \Ordo{\eta^n}, $$
+  where $\hat X_n=\frac{X_n}{\|X_n\|}$. 
+\end{lemma}
+
+Let 
+\begin{lemma} 
+  There is an $\eta$, $0<\eta<1$, 
+  such that
+  \begin{equation}\label{lim0}
+  \E( X_n X_n^* ) = \| X_0 \| I + \Ordo{\eta^n}
+  \end{equation}
+\end{lemma}
+
+
+
+
+
+\subsubsection{The symbolic space and elementary cylinders}
+Let $\X=S^\ZZ$ be the two-sided symbolic space and let
+$\X_+=S^{\ZZ_{\geq0}}$ be the corresponding one-sided space. Both
+spaces are equipped
+with the product topology and the corresponding borel sigma-algebra
+$\CF$ ($\CF_+$). For $n,k\in\ZZ$, $k\leq 0$, we have a map $\pi_n^k:
+\X\to S^k$; $x\mapsto (x_n,x_{n+1},\dots,x_{n+k-1})$. An
+elementary cylinder of length $k$ is a subset of $\X$ (or $\X_+$) of the form 
+$$ [w]_n^k = (\pi_n^k)^{-1}(w), $$
+where $w$ is a fixed word $w=(w_1,\dots,w_k)\in S^k$. Elementary cylinders make
+up an $\mscr I$-system that generates $\CF$, and it is thus enough
+to define measures on cylinders in a consistent way. The set of
+probability measures $\mu$ on $\CF$ is denoted $\mscr M(X,\CF)$.
+
+For $x\in\X$ (or $x\in\X_+$), 
+we use the notation $[x]_n^k$ for the cylinder $[\pi_n^k(x)]_n^k$.
+Often, we assume $n=1$ and
+we can unburden the notation by writing $[w]$ or $[x]^k$ instead of
+$[w]_1$ and $[x]_1^n$. 
+
+\subsection{The Kusuoka measure on a general Hilbert space}
+
+\subsubsection{The Hilbert space and the energy form}
+ We are
+given a separable Hilbert-space $\H$ with Hermitian inner product $(u,v)
+\mapsto \scp uv = u^*v$. 
+On $\H$ we have a continuous positive
+definite \emph{energy-form} $(u,v)\mapsto \mscr E(u,v)$ defined.\footnote{In our
+applications, the space $\H$ is the space of inverse limits of
+resistive tableaux of finite energy on graph sequences $\mb
+G=\{G_m\}$. Alternatively, one can start with the subspace 
+$\mscr H' \subset \mscr H$ as the space of limits of harmonic
+tableaux. For a p.c.f.\ fractals, the harmonic space is finite-dimensional.}
+We assume that the form $\mscr E$ is normalised, i.e.\
+\begin{equation}
+\Tr(\mscr E) := \sum_i \mscr E( u_i, u_i) = 1
+\label{normalisedE}
+\end{equation}
+for some (and then every) ON-basis $\{ u_1, u_2, \dots \}$ of $\H$. 
+
+It follows from \qr{normalisedE} that  $\mscr E$ is
+obtained from some Hilbert-Schmidt \footnote{That the energy form
+  $\mscr E_{\mb G}$ has this
+  property follows from the fact that $\mscr E$ is obtained as
+the limit of $\mscr E_m$, where $\mscr E_m$ is the energy form on the
+finite graph $G_m$. We can factor $\H$ into orthogonal subspaces as
+$\H=\H_1\oplus\H_2\oplus\cdots$, where $u\in\H_n$ for $n>m$ has
+zero $\mscr E_m$-energy.}
+operator $\W:\H\to\H$ such that $\mscr E(u,v) = u^*\W^* \W v$. 
+The Frobenius norm of $\W$ is one, on account of \qr{normalisedE}.  
+
+\subsubsection{Restriction operators}
+In addition to the energy form, 
+we have a family $\{A_s: s\in S\}$ of \emph{restriction operators},
+$A_s:\H \to\H$ indexed by a finite set of symbols
+$S=\{s_1,\dots,s_k\}$ with the property\footnote{In our applications, this
+follows from the fact that we can partition $\mb G$ into $|S|$
+closed subsequences $\mb G[s]$, $s\in S$, that are isomorphic to $\mb G$; that is, the
+self-similarity property.}
+that 
+$$ \mscr E(u,v) = \sum_s \mscr E(A_s u , A_s v). $$
+It follows that 
+\begin{equation} \label{eqid}
+  \sum_s A_s A_s\T = \sum_s A_s\T A_s = 1
+\end{equation}
+where $1$ denotes the identity operator. 
+
+If $\H'\subset\H$ is a common invariant subspace for the restriction
+operators\footnote{%
+Our example is the subspace of harmonic tableaux $\H'=\mscr H(\mb G)$
+of the space $\H'$ of resistive tableaux $\mscr R(\mb G)$.}, i.e.\ $A_s\H' \subset \H'$, then we can carry over all our
+arguments to $\H'$. 
+
+\subsection{Definition of the Kusuoka measure and energy measure}
+We associate to each word $w=(w_1,w_2,\dots,w_k)\in S^k$ the operator 
+$$ A_w=A_{w_k} A_{w_{k-1}}\dots A_{w_1}. $$
+The Kusuoka measure $\nu\in\mscr M(\X,\mathcal B)$ is defined on $\X$ by setting 
+\begin{equation}
+  \label{kusuokadef1}
+\nu([w]_m) = 
+\Tr\left(\mscr E\circ (A_w\times A_w)\right) = 
+\Tr(A_w^*\W^* \W A_w) = \| \W A_w \|^2.
+\end{equation}
+The Kusuoka measure $\nu$
+is clearly invariant on $\X$, since $\nu([w]_m)$ does not depend
+on $m$, and it is enough to define it on cylinders $[w]=[w]_0$. 
+The consistency is due to \qr{eqid}, i.e.\ we have 
+$$ 
+\sum_s \nu([ws]) = \sum_s \Tr(\W A_w A_s A_s^* A_w^* \W^*) = 
+  \Tr(\W A_w 1 A_w^* \W^*) = \nu([w]), 
+$$
+and hence it extends to a probability measure on $\mathcal B$.
+That $\nu$ is normalised follows from \qr{normalisedE}. 
+
+For a fixed non-zero $h\in\mscr H$, we can also define the corresponding 
+\emph{energy-measure }
+$\nu_h$ on $\X$ by setting 
+$$ \nu_h([w]) = \mscr E(A_w h, A_w h) h\T A_w\T \W\T \W A_w h, . $$
+In this way, we may write the Kusuoka measure as the sum 
+$$ \nu(A) = \sum_i \nu_{u_i}(A) $$
+for any ON-basis $u_i$ of $\mscr H$. 
+\footnote{In our applications, we can interpret $\nu_h([w])$ as 
+the power that dissipates on the induced sub-graph $\mb G[w]$.}
+
+\subsection{The Kusuoka measure as a $g$-measure}
+
+As usual, we use $\nu(A|B)$ to denote the conditional measure and for
+the Kusuoka measure we have 
+$$ \nu(w|u)=\frac{\nu(wu)}{\nu(u)} = \frac{\|A_u A_w\|^2}{\| A_u \|^2}. $$
+The process
+$$ x\mapsto (n\mapsto w \mapsto \nu(w\mid [x]_n)), 
+\quad x\in\X_+, n\in\ZZ_+, w\in S^k $$ is a $\nu$-martingale with
+values $w\mapsto \nu(w \mid [x]_n)$ in the compact space of
+distributions on $S^k$. 
+
+By the Martingale convergence theorem (MCT), $\nu(w|[x]_n)$ 
+converges $\nu$-almost everywhere. Note that, with $w=s\in S$, this
+means that the ``$g$-function''
+$$ g(sx) = \lim_{n\to\infty} \nu(s|[x]_n), $$ 
+which defines the transfer operator $L$, is defined $\nu$-almost
+everywhere. In our case, the $g$-function is not continuous, in fact
+it is not continuous anywhere.
+
+Let $\hat A$ denote the normalisation $A/\|A\|$ of $A$ with respect to
+the Frobenius norm. Then 
+$$\nu(ws|w) = \| A_s \hat A_w \|^2 = \| A_s A_w \|^2\big/\| A_w \|^2. $$ 
+It means that the sequence 
+$$\hat A_n(x) := \hat A_{[x]_n}$$ 
+is a Markov chain on the unit sphere $\mscr U = \mscr
+U(\RR^{d\times d}$ with respect to the Frobenius norm.
+If $\H$ is finite-dimensional this is a compact space.
+
+We will use the \emph{singular value decomposition (SVD):} That is, for a
+matrix $d\times d$, $C$ we have a (more or less) unique factorisation
+$$ C = V D U^*$$ 
+where $D$ is a positive diagonal matrix with the singular values
+$\sigma_i(C)$, 
+$$ \sigma_1(C)\geq \sigma_2(C) \geq \cdots \geq \sigma_n(C) $$
+decreasing along the diagonal and $U$ and $V$ are both orthogonal
+matrices. The Frobenius norm of $C$ is given by 
+$$ \| C \| = \| D\| = \sum_{i=1}^n \sigma_i(C)^2. $$ 
+Let $M\to\kappa(M)\geq1$ denote the
+\emph{condition number} of the matrix $M$, i.e. the ratio between the
+largest and the smallest singular values.
+
+Let $A_n(x)=V_n(x)D_n(x)U_n(x)^*$ be the SVD of $A_n(x)$. Define also 
+$E_n(x)=\hat{D_n(x)}$, $C_n(x)=V_n(x)E_n(x)$ and
+$Q_n(x)=E_n(x)U_n(x)^*$. Note that, for any $w\in S^k$, we have 
+$$ \nu(w\mid [x]_n ) = \|\hat A_n(x) A_w \| = \| Q_n(x) A_w \|^2. $$
+Thus the set of $x$ for which $\nu(w\mid [x]_n )$ converges is equal to,
+independently of $w$, the set of $x$ for which $Q_n(x)$ converges to
+some limit $Q(x)$. We can for these $x$ and only these $x$ define the
+$g$-function $g(sx) = \nu(s|x)$. 
+
+We now obtain information about the rate of $\nu$-a.e.\ convergence to the $g$-function from
+its local approximants.
+\begin{thm}
+Let
+$$g_n (x)=\frac{\nu([x]_n)}{\nu([Tx]_{n-1})}.$$
+For $\nu$-a.e.\ $x$, we have, wherever $g(x)$ is defined, that for some $\theta<1$
+$$\lim_{n\to \infty} \frac{1}{n} \log \frac{g_n(x)}{g(x)}=\theta.$$
+\end{thm}
+
+\begin{proof}
+For a fixed $w\in S^k$, we define also
+ $\tl A_n(x) = \tl V_n(x) \tl D_n(x) \tl U_n(x)$ as the SVD
+of the matrix $\tl A_n(x)= A_n(x) A_w$ and $\tl C_n(x)=\tl V_n(x) \tl
+E_n(x)$, where $\tl E_n(x) = \widehat{\tl D_n(x)}$. 
+Note that $C_n$ and $\tl C_n$ are processes
+with statespace also equal to $\mscr U$. Moreover, the distribution of
+$C_n(x)$ is Markovian with respect to $\nu$, since 
+$$ 
+\nu([x]_{n+1}\mid [x]_n) = 
+\frac{\| A_{x_n} A_n(x) \|^2}{\| A_n(x) \|^2} 
+= \| A_{x_n} C_n(x) U_n(x)^* \|^2
+= \| A_{x_n} C_n(x) \|^2.
+$$
+
+With $m\leq n$, we also have 
+\begin{multline*}
+ \nu(w\mid [x]_m) - \nu(w\mid [x]_n) = 
+ \frac{\| A_m(x) A_w \|^2}{\| A_m(x) \|^2} - \frac{\| A_n(x) A_w
+   \|^2}{\| A_n(x) \|^2} \\
+ =
+ \left(1 - \prod_{k=m+1}^n \frac{\| A_{x_k} \tl C_k(x) \|^2}{\| A_{x_k} C_k(x) \|^2}\right)
+ \cdot \| C_m(x) A_w \|^2
+\end{multline*}
+We will show that 
+\begin{lemma}
+$$ \sum_{k=m}^\infty \int \|C_n(x)-\tl C_n(x)\|^2 \d\nu(x) = \Ordo{\theta^m}. $$ 
+\end{lemma}
+\begin{proof}
+  To prove this we use contractivity in mean for the map $\mscr
+  U\to\mscr U$ $C \mapsto C'$ where $C'=V'E'$, where $E'$ is the
+  normalisation of $D'$ and $V'D'{U'}^*$ is the SVD of the matrix $A_s
+  C$ and $A_s$ is the random restriction.
+  
+  For the SG, we know that $A_s$ takes the form 
+  $$ A_s = \opn{constant}\times R^s \begin{bmatrix} 3&0\\ 0&1 \end{bmatrix} R^{-s}, $$
+  and $s=0,1,2$ for a fixed rotation $R$ by $120^\circ$. We can think
+  of $C$ as an ellipsis and it is clear that the map is mean contractive. 
+\end{proof}
+From this lemma it follows that
+$$
+ \int \left(\prod_{k=m+1}^n \frac{\| A_{x_k} \tl C_k(x) \|^2}{\| A_{x_k} C_k(x)
+   \|^2})\right)\d\nu(x) = 1+\Ordo{\theta^m}
+$$
+which proves the sought statement. 
+
+\end{proof}
+
+\section{Exponential convergence}
+Let $X_c$ be the set of points $x$ where the $g$-function is defined.
+\begin{thm}
+For any pcf fractal, we have for the associated Kusuoka measure $\nu$ and for any fixed H\"older continuous function $f$
+$$\sup_{x\in X_c} |{\mathcal L}^m f(x)-\int f\; d\nu|\leq C\beta^m\int |f|\; d\nu,$$
+where $C$ is a uniform constant (depending only on $f$) and $0<\beta<1$.
+\end{thm}
+
+\begin{proof}
+The result follows if we can establish that for a fixed $x\in X_+$ and cylinder sets $[u]=[T^{-m} x]_m$ and $[w]=[T^{-m-k} x]_k$ we have for some $0<\alpha<1$ (note that $\alpha\leq \beta$ in the formulation of the theorem; which $\beta<1$ we get depends on the H\"older space the test function $f$ belongs to)
+\begin{equation}\label{nu}
+\nu(w|x)={\mathcal L}^m 1_{[w]}=\sum_u \nu(wu|x)=\left(1+\Ordo {\alpha^m}\right)\nu(w).
+\end{equation} 
+In matrix form, \eqref{nu} says that
+\begin{equation}\label{XXX}
+   \sum_u \| Q(x) A_u A_w \|^2 \approx \| \sum_u A_u A_w \|^2 = \| A_w \|^2.
+\end{equation}
+Here $Q(x)$ is a normalized matrix in the unit ball $\mscr U$ given by
+the limit $Q(x)=\lim_{n\to\infty} Q_n(x)$ where 
+$$ Q_n(x)=E_n(x)U_n^*(x) $$
+and $U_n(x)$ and $E_n(x)=\hat D_n(x)$ are derived from the SVD $A_n=V_n D_n U^*_n$ of
+$A_n(x)=A([x]_n)$.
+
+Since $\| B \|^2 = \opn{Tr} B B^* = \opn{Tr} B^* B$ we can use linearity of trace
+to obtain the equality
+\begin{equation} \label{XX1}
+  \nu(w|x) = \sum_u \opn{Tr} Q(x) A_u A_w A_w^* A_u^* Q(x)^*
+  = \opn{Tr} Q(x) R_m(A_w) Q(x)^*. 
+\end{equation}
+where 
+$$ R_m(B) =  \sum_u A_u B B^* A_u^*. $$
+
+We are able to establish \eqref{nu} if we can show the following two facts:
+
+(1) The limit $Q(x)=\lim_{n\to \infty} Q_n(x)$ exists $\nu$-a.e., where
+$$\|Q_n(x)A_u\|^2=\frac{\|A_n(x)A_u\|^2}{\|A_n(x)\|^2}=\frac{\nu(u[x]_n)}{\nu([x]_n)}=\nu(u|[x]_n).$$
+This follows from the discussion in subsection 3.2 by the martingale convergence theorem in the same way as for the existence $\nu$-a.e. of the $g$-function. Hence we may assume that the limit $Q(x)$ exists for $x\in X_c$.
+
+(2) The bound 
+\begin{equation}\label{rate}
+\frac{\nu(w|x)}{\nu(w)}=\frac{\Tr Q(x)R_m(A_w)Q^*(x)}{\Tr R_m(A_w)}=1+\Ordo{\alpha^m}.
+\end{equation}
+We obtain \eqref{rate} if $R_m(A_w)$ satisfies 
+\begin{equation}\label{XX2}
+  R_m(A_w) = \sum_u A_u A_w A_w^* A_u^* = \frac1d \cdot \| A_w \|^2 (I+\Ordo{\alpha^m}).
+\end{equation}
+It is easily checked, that \eqref{XX2} holds, given the matrices $A_s$. The map
+$$ H \mapsto \msf M H := \sum_{\sigma\in S} A_\sigma H A_\sigma^* $$
+takes positive definite symmetric matrices in $\RR^{d\times d}$ to
+positive definite symmetric matrices. 
+Note that we can write
+$$ R_m(A_w) = \msf M^m (A_w A_w^*). $$
+Since
+$$\opn{\Tr} A_wA^*_w = d\cdot \nu(w) = d\cdot \sum_\sigma \nu(w\sigma) = \msf M (A_wA_w^*), $$ 
+we also know it preserves the trace, i.e.\ 
+$$\opn{\Tr} \msf M H = \opn{\Tr} H. $$ 
+
+It is easy to see that any constant times the identity matrix $I$ is a fixed-point for
+$\msf M$ and it remains to show that $\frac 1dI$ is an attracting
+fixed-point on $\mscr U'$, where $\mscr U'$ denotes the set of symmetric
+positive definite $d\times d$-matrices of trace $1$. An estimate
+of the corresponding Lyapunov-exponent gives the $\alpha$. Since $\msf
+M$ is linear it is a matter of finding eigenvalues and
+eigenvectors of the corresponding matrix.
+\end{proof}
+
+\section{Examples}
+For simplicity, we now let $f\in m \CF_k$.
+\subsection{The Sierpinski Gasket}
+For the Sierpinski Gasket, $SG$, we obtain the following rate of convergence.
+\begin{thm}
+$$\sup_{x\in X_c} |{\mathcal L}^{m+k} f(x)-\int f\; d\nu|\leq C\left(\frac{4}{5}\right)^m\int |f|\; d\nu,$$
+where $C$ is a uniform constant (depending only on $f$).
+\end{thm}
+
+\begin{proof}
+For $SG$ we have $S=\ZZ_3=\{0,1,2\}$, $d=2$ and corresponding matrices 
+$$ A_s = R^s D R^{-s} $$
+where 
+$$ D = \begin{bmatrix} 3/\sqrt{15} & 0 \\ 0 & 1/\sqrt{15} \end{bmatrix} $$
+and $R$ is the rotation-matrix $R=\opn{Rot}(2\pi/3)$. The map $\msf M$
+takes the form 
+$$
+\begin{bmatrix} a & b \\ b & c \end{bmatrix}
+\mapsto
+\begin{bmatrix}
+ \frac{1}{10} (9 a+c) & \frac{4 b}{5} \\
+ \frac{4 b}{5} & \frac{1}{10} (a+9 c)
+\end{bmatrix}
+$$
+and it is easy to see that 
+$$
+\msf M^m H = I + \Ordo{\left(\frac {4}{5}\right)^m}
+$$
+for any symmetric matrix $H$ with trace 2. That the off-diagonal elements converge with rate $(4/5)^m$ to $0$ is immediate from inspection. On the diagonal, we see that the difference between the two entries in $\msf M H$ is $\frac45 (a-c)$. It follows that the diagonal entries of $\msf M H$ converge to 1 with rate $(4/5)^m$, since $\msf M$ preserves trace. The result follows.
+\end{proof}
+\subsection{SG3}
+
+\section{The Central Limit Theorem}
+
+
+
+Let $\mathcal B$ be the usual Borel sigma algebra for the shift space $X$.
+Let $\mathcal F_n$ be the sub-sigma-algebra defined by $\mathcal F_n = \sigma^{-n}\mathcal B$ such that  $\mathcal E(X_n | \mathcal F_{n})=0$
+and  $\mathcal E(X_{n-1} | \mathcal F_{n})=0$, i.e., a reverse Martingale difference.  
+
+There is a standard statement of the Martingale Central Limit Theorem for independent random variables $X_n$ with mean $\mathbb E(X_n)=0$ and the same variance $\sigma^2 = \mathbb [X_n^2]$.    
+
+\begin{thm}[Revere Martingale Central Limit Theorem]
+Consider a   reverse Martingale difference.
+For  $S_N = \sum_{n=0} X_n$, $N \geq 1$, 
+the values $\frac{S_N}{\sqrt{N}}$ converges in distribution to the normal distribution centred at $0$ and with variance $\sigma^2$.
+\end{thm}
+
+\begin{proof}
+The statement appears, for example. J. Neveu, Mathematical foundations of the calculus of probability, Holden, Day, San Fran cisco, 1965
+\end{proof}
+
+There is actually an even stronger statement, of the Functional Central Limit Theorem
+(or Weak invariance Principle) which holds under the same hypotheses.
+\footnote{It may well be the case that strong ASIP also hold following
+M.  Denker and W. Philipp, 
+Approximation by Brownian motion for Gibbs measures and flows under a function.
+Ergodic Theory Dynam. Systems 4 (1984), no. 4, 541--552.}
+
+
+In order to apply this to the $g$-measure $\nu$ we want to show the corresponding result with $X_n = f \circ \sigma^n$, where $f$ is a H\"older continuous function satisfying $\int f d\nu =0$.    
+
+We follow a classical approach of Gordin, described in 
+Liverani, Carlangelo.
+Central limit theorem for deterministic systems. International Conference on Dynamical Systems (Montevideo, 1995), 56--75,
+Pitman Res. Notes Math. Ser., 362, Longman, Harlow, 1996.
+In fact it is convenient to replace $f$ by $\overline f = f + u\circ \sigma - u$, for some suitable continuous function $u: \Sigma \to \mathbb R$.    In particular, 
+we can define 
+$$u := \sum_{n=0}^\infty \mathcal L^n f \in C^0(\Sigma)$$ where convergence
+is guaranteed since $\|\mathcal L^n f\|_\infty   \leq C \beta^n$, for $n \geq 1$.  
+We now see that 
+$$
+\begin{aligned}
+\mathcal L (\overline f) &= 
+\mathcal L \left(
+ f + u\circ \sigma - u
+\right)\cr
+&= f +  \sum_{n=1}^\infty \mathcal L^n f 
+-  \sum_{n=0}^\infty \mathcal L^n f = 0.
+\cr
+\end{aligned}
+$$
+Since $\mathcal L 1 = 1$ we see that 
+$\mathbb E (\overline f  | \mathcal  B_1) = (\mathcal L \overline f) \circ \sigma = 0$.
+In particular,  $S_n\overline f = \sum_{k=0}^{n-1} \overline f \circ \sigma^k$ is a Martingale  and so by the Theorem we have that 
+$\frac{S_N\overline f}{\sqrt{N}}$ converges in distribution to the normal distribution centred at $0$ and with variance $\sigma^2 = \int  (\overline f)^2 d\mu$.
+
+To relate this back to $f$ by observing that
+$$
+\begin{aligned}
+S_n\overline f &= \sum_{k=0}^{n-1} \overline f \circ \sigma^k \cr 
+&  =   g\circ \sigma^n   - g  +  \sum_{k=0}^{n-1} f \circ \sigma^k 
+\end{aligned}
+$$
+and thus 
+$$
+\frac{S_n\overline f}{\sqrt{n}}
+= \frac{S_n f}{\sqrt{n}} + \frac{g\circ \sigma^n   - g}{\sqrt{n}}
+$$
+In particular, since the last term tends to zero in distribution we see from the theorem that 
+$\frac{S_N  f}{\sqrt{N}}$ also converges in distribution to the normal distribution centred at $0$ and with variance $\sigma^2$.  
+
+\begin{thebibliography}{999}
+\bibitem{str1} J.\ Azzam, M.A.\ Hall and R.S.\ Strichartz, {\em Conformal energy, conformal 
+Laplacian, and energy measures on the Sierpinski gasket}, 
+Trans.\ Amer.\ Math.\ Soc.\ {\bf 360} (2008), 2089--2131.
+
+\bibitem{str3} R.\ Bell, C.-W.\ Ho and R.S.\ Strichartz, {\em Energy 
+measures of harmonic functions on the Sierpinski gasket}, Indiana J.\ Math., to appear.
+
+\bibitem{gallo} S.\ Gallo and F.\ Paccaut, {\em On non-regular 
+$g$-measures}, preprint, arXiv 14 Sep 2012.
+
+\bibitem{kajino}  N.\ Kajino, {\em Heat kernel asymptotics for the measurable Riemannian structure on the Sierpinski gasket}, Potential Anal.\ {\bf 36} (2012), no. 1, 67--115.
+
+\bibitem{kigami1} J.\ Kigami, {\em Harmonic calculus on p.c.f.\ self-similar sets}, Trans.\ Amer.\ Math.\ Soc.\ {\bf 335}(2) (1993), 721--755.
+
+\bibitem{kigami} J.\ Kigami, Analysis on fractals, Cambridge Tracts in Mathematics {\bf 143}, Cambride, 2001.
+
+\bibitem{kigami2} J.\ Kigami, {\em Measurable Riemannian geometry on the Sierpinski gasket: 
+the Kusuoka measure and the Gaussian heat kernel estimate}, Math.\ Ann.\  {\bf 340}(4) (2008), 781--804.
+
+\bibitem{kigami3} J.\ Kigami, {\em Resistance forms, quasisymmetric maps and heat kernel estimates}, Mem.\ Amer.\ Math.\ Soc.\ {\bf 216} (2012).
+
+\bibitem{kusuoka1} S.\ Kusuoka, {\em A diffusion process on a fractal. Probabilistic methods in mathematical physics} (Katata/Kyoto, 1985), 251--274, Academic Press, Boston, MA, 1987.
+
+\bibitem{kusuoka2} S.\ Kusuoka, {\em Dirichlet forms on fractals and products of random matrices}, Publ.\ Res.\ Inst.\ Math.\ Sci.\ {\bf 25} (1989), no. 4, 659--680.
+
+\bibitem{calc} J.\ Needleman, R.S.\ Strichartz, A.\ Teplyaev, P.-L. Yung, {\em Calculus on the Sierpinski gasket. I. Polynomials, exponentials and power series}, J.\ Funct.\ Anal.\ {\bf 215} (2004), no. 2, 290--340.
+
+\bibitem{str} R.S.\ Strichartz, Differential Equations on Fractals, 
+Princeton University Press, Princeton 2006.
+
+\bibitem{str2} R.S.\ Strichartz and S.T.\ Tse, {\em Local behavior of 
+smooth functions for the energy Laplacian on the Sierpinski gasket}, 
+Analysis {\bf 30} (2010), 285--299.
+
+\bibitem{tyran} M.\ Tyran-Kami\'nska, {\em An invariance principle of map with polynomial decay of correlations}, 
+Commun.\ Math.\ Phys.\ {\bf 260} (2005), 1--15.
+
+\end{thebibliography}
+\end{document}
